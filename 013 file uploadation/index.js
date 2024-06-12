@@ -28,6 +28,7 @@ const multerStorage = multer.diskStorage({
 const upload = multer({storage:multerStorage}).single("thumbnail");
 
 app.use(express.json());
+app.use("/uploads" , express.static("uploads"));
 
 app.post("/insert_single_file" , upload , async (req,res)=>{
     try {
@@ -48,6 +49,27 @@ app.post("/insert_single_file" , upload , async (req,res)=>{
         console.log(error);
         res.status(500).json({msg:"internal server error"})
     }
+});
+
+app.get("/read_data" , async(req,res)=>{
+    try {
+        const response = await Product.find();
+
+        const dataWithPath = response.map((data)=>{
+            data.thumbnail = `${req.protocol}://${req.get("host")}/uploads/${data.thumbnail}`;
+            return data;
+        });
+
+        console.log(dataWithPath)
+
+        res.status(200).json({msg:"data fetched successfully" , data:dataWithPath});
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).json({msg:"data can't read"});
+    }
+
+    console.log(`${req.protocol}://${req.get("host")}/uploads`);
 });
 
 app.listen(4000 , ()=>{
