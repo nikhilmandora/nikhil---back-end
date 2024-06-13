@@ -60,13 +60,41 @@ app.get("/read_data" , async(req,res)=>{
             return data;
         });
 
-        console.log(dataWithPath)
+        console.log(dataWithPath);
 
         res.status(200).json({msg:"data fetched successfully" , data:dataWithPath});
     }
     catch(error) {
         console.log(error);
         res.status(500).json({msg:"data can't read"});
+    }
+
+    console.log(`${req.protocol}://${req.get("host")}/uploads`);
+});
+
+app.put("/update_data" , async(req,res)=>{
+    try {
+        const response = await Product.updateOne();
+
+        res.status(200).json({msg:"data update successfully" , data:response});
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).json({msg:"data can't update"});
+    }
+
+    console.log(`${req.protocol}://${req.get("host")}/uploads`);
+});
+
+app.delete("/delete_data" , async(req,res)=>{
+    try {
+        const response = await Product.deleteOne();
+
+        res.status(200).json({msg:"data delete successfully" , data:response});
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).json({msg:"data can't delete"});
     }
 
     console.log(`${req.protocol}://${req.get("host")}/uploads`);
